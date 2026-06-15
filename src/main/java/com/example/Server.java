@@ -12,6 +12,7 @@ import java.net.Socket;
 
 public class Server {
     final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
+    public int serverSocket;
     ServerSocket server;
     Socket socket;
     BufferedReader br;
@@ -40,7 +41,7 @@ public class Server {
     
     private void initializeUI() {
         frame = new JFrame();
-        frame.setTitle("Client");
+        frame.setTitle("Client 2");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.getContentPane().setLayout(new BorderLayout());

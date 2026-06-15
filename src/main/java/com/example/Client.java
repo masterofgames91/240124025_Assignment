@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -20,7 +19,6 @@ public class Client {
     private JTextArea chatArea;
     private JTextField messageField;
     private String username;
-    private String logs;
     public Client() {
         initializeUI();
     }
@@ -43,7 +41,7 @@ public class Client {
         messageField = new JTextField();
         messageField.setEnabled(false);
         inputPanel.add(messageField);
-        logs.getText
+        
                 
                 JButton sendButton = new JButton("Send");
                 sendButton.setEnabled(false);
@@ -51,13 +49,10 @@ public class Client {
                     
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        Logger logger = new Logger("240124025_Assignment", "Logs.txt");
+                        logger.log(username + ": " + messageField.getText());
                         sendMessage();
-                        try(FileWriter writer = new FileWriter("Logs.txt")){
-                            writer.write("Hello");
-                        }
-                        catch(IOException e1){
-                            System.out.println("Could not write to file");
-                        }
+                        
                     }
                 });
                 inputPanel.add(sendButton);

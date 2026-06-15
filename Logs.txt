@@ -1,1 +1,9 @@
-Hello
+[07:37:54] Desired log message
+[07:39:15] 
+[07:40:05] hi
+[07:41:35] hello there
+[07:41:39] goodbye
+[07:49:37] jeffhelloe ther mike
+[07:49:43] Mikehello there jeff
+[07:50:41] jeff: hello mike
+[07:50:48] mike: helloe jeff

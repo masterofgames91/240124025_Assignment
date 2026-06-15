@@ -63,6 +63,8 @@ public class Server {
                 sendButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        Logger logger = new Logger("240124025_Assignment", "Logs.txt");
+                        logger.log(username + ": " + messageField.getText());
                         sendMessage();
                     }
                 });
@@ -180,5 +182,7 @@ public class Server {
         Thread clientThread = new Thread(() -> new Client());
         serverThread.start();
         clientThread.start();
+        Logger logger = new Logger("240124025_Assignment", "Logs.txt");
+        logger.tidyUp();
     }
 }

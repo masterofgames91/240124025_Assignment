@@ -7,27 +7,47 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-public class NewFrame {
-    private Socket socket;
-    private BufferedReader br;
-    private PrintWriter out;
+public class Server {
+    final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
+    ServerSocket server;
+    Socket socket;
+    BufferedReader br;
+    PrintWriter out;
     private JFrame frame;
     private JTextArea chatArea;
     private JTextField messageField;
+    private JButton sendButton;
     private String username;
-    public NewFrame() {
+    public Server() {
         initializeUI();
+        try {
+            server = new ServerSocket(7777);
+            appendToChatArea("Server is ready to accept the connection");
+            appendToChatArea("Waiting...");
+             
+//            socket = server.accept();
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
+            startReading();
+            startWriting();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+    
     private void initializeUI() {
         frame = new JFrame();
         frame.setTitle("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(800, 600);
         frame.getContentPane().setLayout(new BorderLayout());
         chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setBackground(new Color(128,128,255));
+        chatArea.setFont(mainFont);
         JScrollPane scrollPane = new JScrollPane(chatArea);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         JPanel inputPanel = new JPanel();
@@ -37,11 +57,9 @@ public class NewFrame {
         messageField.setEnabled(false);
         inputPanel.add(messageField);
         
-                
-                JButton sendButton = new JButton("Send");
+                sendButton = new JButton("Send");
                 sendButton.setEnabled(false);
                 sendButton.addActionListener(new ActionListener() {
-                    
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         sendMessage();
@@ -49,8 +67,9 @@ public class NewFrame {
                 });
                 inputPanel.add(sendButton);
                 
-                JLabel usernameLabel = new JLabel("Username:");
-                inputPanel.add(usernameLabel);
+        
+        JLabel usernameLabel = new JLabel("Username:");
+        inputPanel.add(usernameLabel);
         
                 JTextField usernameField = new JTextField();
                 inputPanel.add(usernameField);
@@ -66,22 +85,20 @@ public class NewFrame {
                             usernameField.setEditable(false);
                             
                         }
-                        // Establish connection with the server
+                        // Establish connection with the client
                         try {
-                            System.out.println("Sending Request to the server");
-                            socket = new Socket("127.0.0.1", 7777);
-                            appendToChatArea("[Client]: Connected to server");
-                            
+                            socket = server.accept();
                             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                             out = new PrintWriter(socket.getOutputStream());
+                            appendToChatArea("[Server]: Client connected");
                             startReading();
                             messageField.setEnabled(true);
                             sendButton.setEnabled(true);
                             messageField.requestFocus();
-                            
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
+                        
                     }
                 });
                 inputPanel.add(connectButton);
@@ -92,30 +109,14 @@ public class NewFrame {
                 shutdown();
             }
         });
-        
         inputPanel.add(quitButton);
         
         frame.setVisible(true);
     }
-    private void appendToChatArea(String message) {
-        chatArea.append(message + "\n");
-    }
     
-    private void sendMessage() {
-        String message = messageField.getText().trim();
-        if (!message.isEmpty()) {
-            if (message.startsWith("@username:")) {
-                out.println(message);
-            } else {
-                out.println(username + ": " + message);
-            }
-            out.flush();
-            messageField.setText("");
-        }
-    }
-     
     private void shutdown() {
         try {
+            server.close();
             socket.close();
             br.close();
             out.close();
@@ -123,6 +124,9 @@ public class NewFrame {
             e.printStackTrace();
         }
         System.exit(0);
+    }
+    private void appendToChatArea(String message) {
+        chatArea.append(message + "\n");
     }
     public void startReading() {
         Runnable reader = () -> {
@@ -133,7 +137,7 @@ public class NewFrame {
                    
                         appendToChatArea(message);
                     
-    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -154,5 +158,26 @@ public class NewFrame {
             }
         };
         new Thread(writer).start();
+    }
+    private void sendMessage() {
+        String message = messageField.getText().trim();
+        if (!message.isEmpty()) {
+            if (message.startsWith("@username:")) {
+                out.println(message);
+            } else {
+                out.println(username + ": " + message);
+            }
+            out.flush();
+            messageField.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Going to start the server");
+        Thread serverThread = new Thread(() -> new Server());
+        System.out.println("Client is started");
+        Thread clientThread = new Thread(() -> new Client());
+        serverThread.start();
+        clientThread.start();
     }
 }

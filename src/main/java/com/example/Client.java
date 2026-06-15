@@ -29,10 +29,12 @@ public class Client {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.getContentPane().setLayout(new BorderLayout());
+
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setBackground(new Color(128,128,255));
         chatArea.setFont(mainFont);
+        
         JScrollPane scrollPane = new JScrollPane(chatArea);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         JPanel inputPanel = new JPanel();

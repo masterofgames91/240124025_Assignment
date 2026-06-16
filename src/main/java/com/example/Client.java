@@ -9,6 +9,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/*
+ * A client that a user will see
+ */
+
+
 public class Client {
     final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
     public int serverSocket;
@@ -23,6 +28,11 @@ public class Client {
         initializeUI();
     }
 
+    /*
+     * The JFrame for the UI is created
+     */
+
+
     private void initializeUI() {
         frame = new JFrame();
         frame.setTitle("Client");
@@ -34,7 +44,7 @@ public class Client {
         chatArea.setEditable(false);
         chatArea.setBackground(new Color(128,128,255));
         chatArea.setFont(mainFont);
-        
+
         JScrollPane scrollPane = new JScrollPane(chatArea);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         JPanel inputPanel = new JPanel();
